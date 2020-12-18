@@ -2,3 +2,4 @@ dist
 sources.txt
 
 .DS_Store
+*.log
