@@ -16,6 +16,6 @@ name2,url2
 ```
 
 ```sh
-./metube download sources.txt
+./metube download sources.txt [<dist folder>]
 ```
 

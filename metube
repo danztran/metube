@@ -29,7 +29,7 @@ snapdiff() {
 	[ -f "$snapshot" ] && mv -f "$snapshot" "$snapshot_old"
 	printf "$ts\n---\n" > "$snapshot"
 	snap "$dist" >> "$snapshot"
-	git diff --no-index "$snapshot_old" "$snapshot" > "$dist/update"
+	git diff --no-index "$snapshot_old" "$snapshot" | grep -E '^(\+[^\+]{2}|\-[^\-]{2})' > "$dist/update"
 }
 
 snap() {
