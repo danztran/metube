@@ -30,6 +30,8 @@ snapdiff() {
 	printf "$ts\n---\n" > "$snapshot"
 	snap "$dist" >> "$snapshot"
 	git diff --no-index "$snapshot_old" "$snapshot" | grep -E '^(\+[^\+]{2}|\-[^\-]{2})' > "$dist/update"
+	echo ---
+	cat "$dist/update"
 }
 
 snap() {
