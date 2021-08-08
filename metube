@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 main() {
 	eval "$@"
@@ -8,6 +8,12 @@ download() {
 	local src_file="$1"
 	local dist="$2"
 	[ -z "$dist" ] && dist="dist"
+	local tmpdir="/tmp/metube"
+	mkdir -p $tmpdir
+
+	# store current status
+	snap $dist > "$tmpdir/snapold"
+
 	cat $src_file | while read src
 	do
 		local playlist=`echo $src | awk -F , '{print $1}'`
@@ -15,23 +21,20 @@ download() {
 		echo \> playlist $playlist - link $link
 		mkdir -p "$dist" "$dist/$playlist"
 		youtube-dl -cix --add-metadata --download-archive "$dist/$playlist/.archive" --audio-format mp3 -o "$dist/$playlist/%(title)s.%(ext)s" "$link"
-		eyed3 -A "$playlist" -G "$playlist" "$dist/$playlist"
+		eyeD3 -A "$playlist" -G "$playlist" "$dist/$playlist" > /dev/null
 	done
+
+	# store new status
+	snap $dist > "$tmpdir/snapnew"
 	snapdiff $dist
 }
 
 snapdiff() {
 	local dist="$1"
 	local ts=`date '+%F %H:%M:%S'`
-	local snapshot="$dist/snapshot"
-	local snapshot_old="$dist/snapshot_old"
-	echo > $snapshot_old
-	[ -f "$snapshot" ] && mv -f "$snapshot" "$snapshot_old"
-	printf "$ts\n---\n" > "$snapshot"
-	snap "$dist" >> "$snapshot"
-	git diff --no-index "$snapshot_old" "$snapshot" | grep -E '^(\+[^\+]{2}|\-[^\-]{2})' > "$dist/update"
-	echo ---
-	cat "$dist/update"
+	local changes=$(git diff --no-index "$tmpdir/snapold" "$tmpdir/snapnew" 2>&1 | grep -E '^(\+[^\+]{2}|\-[^\-]{2})')
+	: ${changes:="Already up to date."}
+	echo "---$ts---\n$changes" | tee -a "$dist/CHANGELOG"
 }
 
 snap() {
@@ -39,9 +42,36 @@ snap() {
 	find $dist -type f -name '*.mp3' | sed "s|^$dist/||"
 }
 
+logvar() {
+	for var in $@; do
+		echo "$var = ${(P)var}"
+	done
+}
+
+search() {
+	IFS=$'\n'
+	local dist="$1"
+	local pattern="$2"
+	local songs=( $(find $dist -type f -name '*.mp3') )
+
+	logvar dist pattern
+
+	echo ---
+	for song in ${songs[@]}; do
+		local info=$(ffmpeg -i "$song" -hide_banner -f null /dev/null 2>&1 | grep -E "$pattern")
+		[ -n "$info" ] && echo found ${song/~/\~} && return
+	done
+}
+
+gen() {
+	local audio="$1"
+	local video="$2"
+	logvar audio video
+	ffmpeg -loop 1 -i image.jpg -i "$audio" -shortest -c:v libx264 -c:a copy "$video"
+}
+
 install() {
 	brew install youtube-dl eye-d3 ffmpeg
 }
 
 main $@
-
