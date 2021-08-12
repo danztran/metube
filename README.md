@@ -1,13 +1,13 @@
 # metube
-Bash script to download entire youtube playlist videos and convert to music format.
+Shell script to download entire youtube playlist videos and convert to music format.
 
-# Setup
+## Setup
 ```sh
 ./metube install
 ```
 
-# Run
-Prepare a sources file contains all playlist name and url in the following format: 
+## Run
+Prepare a sources file contains all playlists including name and url in the following format: 
 
 sources.txt
 ```
@@ -16,6 +16,6 @@ name2,url2
 ```
 
 ```sh
-./metube download sources.txt [<dist folder>]
+./metube download sources.txt /path/to/music
 ```
 
