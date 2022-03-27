@@ -41,6 +41,27 @@ remotediff() {
 	done
 }
 
+archivediff() {
+	IFS=$'\n'
+	local dist="$1"
+	local archives=( $(find $dist -type f -name '.archive') )
+
+	for archive in ${archives[@]}; do
+		echo --- $archive
+
+		local dir=$(dirname $archive)
+		local songs=( $(find $dir -type f -name '*.mp3') )
+		local list=$(cat $archive)
+		for song in ${songs[@]}; do
+		  # echo $yt_id: $song
+			local yt_id=$(ffmpeg -i "$song" -f null /dev/null 2>&1 | grep -E '\s*purl.*https://' | head -n 1 | awk -F '?v=' '{print $2}')
+			local found=$(echo $list | grep -- "$yt_id")
+			[ -z $found ] && echo $yt_id: $song
+		done
+	done
+	echo "mission accomplished!"
+}
+
 snapdiff() {
 	local dist="$1"
 	local ts=`date '+%F %H:%M:%S'`
