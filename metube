@@ -29,6 +29,18 @@ download() {
 	snapdiff $dist
 }
 
+remotediff() {
+	IFS=$'\n'
+	local dist="$1"
+	local songs=( $(find $dist -type f -name '*.mp3') )
+
+	echo ---
+	for song in ${songs[@]}; do
+		local url=$(ffmpeg -i "$song" -f null /dev/null 2>&1 | grep -E '\s*purl.*https://' | head -n 1 | awk -F ': ' '{print $2}')
+		youtube-dl --skip-download --get-title "$url" >/dev/null || echo "$song\n"
+	done
+}
+
 snapdiff() {
 	local dist="$1"
 	local ts=`date '+%F %H:%M:%S'`
