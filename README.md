@@ -19,3 +19,9 @@ name2,url2
 ./metube download sources.txt /path/to/music
 ```
 
+## List Video IDs on youtube playlist
+
+```js
+titles = document.querySelectorAll('#video-title')
+for (title of titles) console.log(title.getAttribute('href'))
+```
