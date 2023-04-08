@@ -1,4 +1,6 @@
 #!/bin/zsh
+: ${YOUTUBE_DL_PATH:="yt-dlp"}
+alias youtube-dl="$YOUTUBE_DL_PATH"
 
 main() {
 	eval "$@"
@@ -104,7 +106,7 @@ gen() {
 }
 
 install() {
-	brew install youtube-dl eye-d3 ffmpeg
+	brew install $YOUTUBE_DL_PATH eye-d3 ffmpeg
 }
 
 main $@
