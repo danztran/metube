@@ -34,7 +34,7 @@ download() {
 remotediff() {
 	IFS=$'\n'
 	local dist="$1"
-	local songs=( $(find $dist -type f -name '*.mp3') )
+	local songs=( $(find -L $dist -type f -name '*.mp3') )
 
 	echo ---
 	for song in ${songs[@]}; do
@@ -46,13 +46,13 @@ remotediff() {
 archivediff() {
 	IFS=$'\n'
 	local dist="$1"
-	local archives=( $(find $dist -type f -name '.archive') )
+	local archives=( $(find -L $dist -type f -name '.archive') )
 
 	for archive in ${archives[@]}; do
 		echo --- $archive
 
 		local dir=$(dirname $archive)
-		local songs=( $(find $dir -type f -name '*.mp3') )
+		local songs=( $(find -L $dir -type f -name '*.mp3') )
 		local list=$(cat $archive)
 		for song in ${songs[@]}; do
 		  # echo $yt_id: $song
@@ -74,7 +74,7 @@ snapdiff() {
 
 snap() {
 	local dist="$1"
-	find $dist -type f -name '*.mp3' | sed "s|^$dist/||"
+	find -L $dist -type f -name '*.mp3' | sed "s|^$dist/||"
 }
 
 logvar() {
@@ -87,7 +87,7 @@ search() {
 	IFS=$'\n'
 	local dist="$1"
 	local pattern="$2"
-	local songs=( $(find $dist -type f -name '*.mp3') )
+	local songs=( $(find -L $dist -type f -name '*.mp3') )
 
 	logvar dist pattern
 
