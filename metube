@@ -23,7 +23,7 @@ download() {
 		echo \> playlist $playlist - link $link
 		mkdir -p "$dist" "$dist/$playlist"
 		youtube-dl -cix --add-metadata --download-archive "$dist/$playlist/.archive" --audio-format mp3 -o "$dist/$playlist/%(title)s.%(ext)s" "$link"
-		eyeD3 -A "$playlist" -G "$playlist" "$dist/$playlist" > /dev/null
+		eyeD3 --preserve-file-times -A "$playlist" -G "$playlist" "$dist/$playlist" > /dev/null
 	done
 
 	# store new status
