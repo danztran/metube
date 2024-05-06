@@ -24,17 +24,14 @@ download() {
 		mkdir -p "$dist" "$dist/$playlist"
 		youtube-dl -cix \
 			--download-archive "$dist/$playlist/.archive" \
-      -S ext \
-      --audio-format m4a \
+			-S ext \
+			--audio-format m4a \
 			--add-metadata \
-      --parse-metadata "title:%(title)s" \
-      -o "$dist/$playlist/%(title)s.%(ext)s" \
-      "$link"
-		eyeD3 --preserve-file-times \
-			--non-std-genres \
-			-A "$playlist" \
-			-G "$playlist" \
-			"$dist/$playlist" > /dev/null
+			--parse-metadata "title:%(title)s" \
+			--ppa "Metadata:-metadata Album=$playlist -metadata Genre=$playlist" \
+			--embed-thumbnail \
+			-o "$dist/$playlist/%(title)s.%(ext)s" \
+			"$link"
 	done
 
 	# store new status
@@ -117,7 +114,7 @@ gen() {
 }
 
 install() {
-	brew install $YOUTUBE_DL_PATH eye-d3 ffmpeg
+	brew install $YOUTUBE_DL_PATH ffmpeg
 }
 
 main $@
