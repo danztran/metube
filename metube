@@ -18,6 +18,8 @@ download() {
 
 	cat $src_file | while read src
 	do
+		# skip if line start with #
+		[[ $src == \#* ]] && continue
 		local playlist=`echo $src | awk -F , '{print $1}'`
 		local link=`echo $src | awk -F , '{print $2}'`
 		echo \> playlist $playlist - link $link
@@ -43,7 +45,7 @@ download() {
 remotediff() {
 	IFS=$'\n'
 	local dist="$1"
-	local songs=( $(find -L $dist -type f -name '*.mp3') )
+	local songs=( $(find -L $dist -type f -not -name '.archive') )
 
 	echo ---
 	for song in ${songs[@]}; do
@@ -61,7 +63,7 @@ archivediff() {
 		echo --- $archive
 
 		local dir=$(dirname $archive)
-		local songs=( $(find -L $dir -type f -name '*.mp3') )
+		local songs=( $(find -L $dir -type f -not -name '.archive') )
 		local list=$(cat $archive)
 		for song in ${songs[@]}; do
 		  # echo $yt_id: $song
@@ -83,7 +85,7 @@ snapdiff() {
 
 snap() {
 	local dist="$1"
-	find -L $dist -type f -name '*.mp3' | sed "s|^$dist/||"
+	find -L $dist -type f | sed "s|^$dist/||"
 }
 
 logvar() {
@@ -96,7 +98,7 @@ search() {
 	IFS=$'\n'
 	local dist="$1"
 	local pattern="$2"
-	local songs=( $(find -L $dist -type f -name '*.mp3') )
+	local songs=( $(find -L $dist -type f -not -name '.archive') )
 
 	logvar dist pattern
 
