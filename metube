@@ -30,6 +30,7 @@ download() {
 			--parse-metadata "title:%(title)s" \
 			--ppa "Metadata:-metadata Album=$playlist -metadata Genre=$playlist" \
 			--embed-thumbnail \
+			--convert-thumbnails jpg \
 			-o "$dist/$playlist/%(title)s.%(ext)s" \
 			"$link"
 	done
