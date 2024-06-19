@@ -31,6 +31,7 @@ download() {
 			--add-metadata \
 			--parse-metadata "title:%(title)s" \
 			--ppa "Metadata:-metadata Album=$playlist -metadata Genre=$playlist" \
+			--ppa "ffmpeg: -c:v mjpeg -vf crop=\"'if(gt(ih,iw),iw,ih)':'if(gt(iw,ih),ih,iw)'\"" \
 			--embed-thumbnail \
 			--convert-thumbnails jpg \
 			-o "$dist/$playlist/%(title)s.%(ext)s" \
