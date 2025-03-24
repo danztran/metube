@@ -18,11 +18,12 @@ download() {
 
 	cat $src_file | while read src
 	do
-		# skip if line start with #
-		[[ $src == \#* ]] && continue
-		local playlist=`echo $src | awk -F , '{print $1}'`
-		local link=`echo $src | awk -F , '{print $2}'`
-		echo \> playlist $playlist - link $link
+		# skip if line empty or start with #
+		[[ $src =~ ^\s*# ]] && continue
+		[[ -z "${src// }" ]] && continue
+		local playlist link
+		IFS=',' read -r playlist link <<< "$src"
+		echo \> playlist "$playlist" - link "$link"
 		mkdir -p "$dist" "$dist/$playlist"
 		youtube-dl -cix \
 			--download-archive "$dist/$playlist/.archive" \
