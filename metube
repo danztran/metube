@@ -119,6 +119,7 @@ gen() {
 }
 
 install() {
+	ln -s $PWD/metube /usr/local/bin/
 	brew install $YOUTUBE_DL_PATH ffmpeg
 }
 
